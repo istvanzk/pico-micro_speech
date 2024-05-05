@@ -2,9 +2,10 @@
 
 ![Exp](https://img.shields.io/badge/Fork&Copy-experimental-orange.svg)
 [![Lic](https://img.shields.io/badge/License-Apache2.0-green)](http://www.apache.org/licenses/LICENSE-2.0)
-![Py](https://img.shields.io/badge/python-3.9+-green)
+![Py](https://img.shields.io/badge/Python-3.9+-green)
 [![TensorFlow 2.15](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?logo=tensorflow)](https://github.com/tensorflow/tensorflow/releases/tag/v2.15.0)
-![Ver](https://img.shields.io/badge/version-0.1-lightgrey)
+![Ver](https://img.shields.io/badge/Version-0.11-lightgrey)
+![HWD](https://img.shields.io/badge/HWD_tests-Ongoing-lightgreen)
 
 This repo implements the *micro_speech* example for deployment on Raspberry Pico RP2040 compatible micrcontroller boards. The code is meant to be installed and compiled as part of the [pico-tflmicro](https://github.com/raspberrypi/pico-tflmicro/) version of the [TensorFlow Lite Micro library](https://www.tensorflow.org/lite/microcontrollers) for the Raspberry Pi Pico microcontroller.
 
@@ -16,7 +17,7 @@ The code re-uses most of the [esp-tflite-micro](https://github.com/espressif/esp
 
 * The `analog_audio_provider.cc`, `pdm_audio_provider.cc`, `command_responser.cc` and `main.cc` code from [pico-wake-word](https://github.com/henriwoodcock/pico-wake-word) implementation is used.
 
-* From the [Microphone Library for Pico](https://github.com/ArmDeveloperEcosystem/microphone-library-for-pico/tree/a837f633a6ad2bac268349df35d57e46e551f416) @a837f63 the `microphone-library-for-pico/src` code has been copied with minor modification to this repo, under `pico-microphone/src` folder:
+* From the [Microphone Library for Pico @a837f63](https://github.com/ArmDeveloperEcosystem/microphone-library-for-pico/tree/a837f633a6ad2bac268349df35d57e46e551f416) the `microphone-library-for-pico/src` code has been copied with minor modification to this repo, under `pico-microphone/src` folder:
 
   * The `pico-microphone/CMakeLists.txt` file has been edited to remove these lines:
     ```
@@ -74,13 +75,24 @@ make
 
 2. To build the data files needed, use [Convert models and audio samples to C++](https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/micro/examples/micro_speech#converting-models-or-audio-samples-to-c). The test audio sample files in C++ format need to be placed under `micro_speech/testdata`.
 
-3. There are other, 3+ years older, versions of the *micro_speech* example implementation which require the use of the [microfrontend](https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/experimental/microfrontend) implementation e.g., [pico-wake-word](https://github.com/henriwoodcock/pico-wake-word).
-This current implementation does not use the *microfrontend* source code and instead relies on *audio_preprocessor_int8_model_data* model.
+3. There are other, 3+ years older, versions of the *micro_speech* example implementation which require the use of the [microfrontend](https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/experimental/microfrontend) implementation e.g., [pico-wake-word](https://github.com/henriwoodcock/pico-wake-word) or [micro_speech @6ff638](https://github.com/raspberrypi/pico-tflmicro/tree/6ff6387ed1fb3b721b0996583c4af8872980833b/examples/micro_speech)
+This current implementation does not use the *microfrontend* code and instead relies on *audio_preprocessor_int8_model_data* model.
  
+## HWD tests with analog microphone
+
+[SparkFun ICS-40180 analog MEMS microphone](https://learn.sparkfun.com/tutorials/mems-microphone-hookup-guide).
+
+For an RP2040 based microcontroller, the ADC resolution is 12-bits, sampling frequency is 48Mhz, sample at a rate of 500kS/s and ADC max voltage is 3.3V. It takes 96 clock cycles for each sample i.e., (96/48Mhz)= 2μS is the sampling time required for each sample.
+ * voltage_value  =3.3 * (digital_value/(2^resolution))
+ * The AUD output DC offset is at one-half the power supply voltage i.e. about 1.65V
+
+
 
 ## TODOs
 
  - [ ] Deploy and test on RP2040 based microcontroller board (microphone, etc.).
+    * Write code which displays the audio amplitude/waveform or spectrogram on [SparkFun MicroMod Input and Display Carrier Board](https://learn.sparkfun.com/tutorials/sparkfun-micromod-input-and-display-carrier-board-hookup-guide) 
+    * Modify `command_responser.cc` to provide display indication
 
- - [ ] Implement some more tests as in the [pico-wake-word](https://github.com/henriwoodcock/pico-wake-word) implementation. Can tests be implemneted to be run on the development machine?
+ - [ ] Implement some more tests, as in the [pico-wake-word](https://github.com/henriwoodcock/pico-wake-word) or [micro_speech @6ff638](https://github.com/raspberrypi/pico-tflmicro/tree/6ff6387ed1fb3b721b0996583c4af8872980833b/examples/micro_speech) implementations. Can tests be implemented to be run on the development machine?
     * Check if the use of `tflite::MicroErrorReporter` and `TF_LITE_REPORT_ERROR` instead of `MicroPrintf` is still OK. The [logging](https://github.com/tensorflow/tflite-micro/blob/main/tensorflow/lite/micro/docs/logging.md) guidelines indicate *do not use* and *not support/recommend*.
