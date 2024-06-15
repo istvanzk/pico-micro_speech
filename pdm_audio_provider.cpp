@@ -48,15 +48,6 @@ struct pdm_microphone_config pdm_config = {
     .sample_rate = 16000,
     .sample_buffer_size = 256,
 };
-
-// struct analog_microphone_config config = {
-//   .gpio = 26,
-//   .bias_voltage = 1.25,
-//   .sample_rate = 16000,
-//   .sample_buffer_size = 256,
-// };
-
-
 }  // namespace
 
 #include "pico/stdlib.h"
@@ -83,16 +74,19 @@ void CaptureSamples() {
   // printf("now = %u\n", now);
 }
 
-TfLiteStatus InitAudioRecording(tflite::ErrorReporter* error_reporter) {
-  pdm_microphone_init(&pdm_config);
+TfLiteStatus InitAudioRecording() {
+  if (pdm_microphone_init(&pdm_config) < 0) {
+      MicroPrintf("PDM microphone initialization failed!");
+    while (1) { tight_loop_contents(); }
+  }
   // pdm_microphone_set_filter_gain(20);
   // pdm_microphone_set_filter_max_volume(128);
   pdm_microphone_set_samples_ready_handler(CaptureSamples);
-  pdm_microphone_start();
 
-  // analog_microphone_init(&config);
-  // analog_microphone_set_samples_ready_handler(CaptureSamples);
-  // analog_microphone_start();
+  if (pdm_microphone_start() < 0) {
+    MicroPrintf("PDM microphone start failed");
+    while (1) { tight_loop_contents();  }
+  }
 
   // Block until we have our first audio sample
   while (!g_latest_audio_timestamp) {
@@ -101,12 +95,11 @@ TfLiteStatus InitAudioRecording(tflite::ErrorReporter* error_reporter) {
   return kTfLiteOk;
 }
 
-TfLiteStatus GetAudioSamples(tflite::ErrorReporter* error_reporter,
-                             int start_ms, int duration_ms,
+TfLiteStatus GetAudioSamples(int start_ms, int duration_ms,
                              int* audio_samples_size, int16_t** audio_samples) {
   // Set everything up to start receiving audio
   if (!g_is_audio_initialized) {
-    TfLiteStatus init_status = InitAudioRecording(error_reporter);
+    TfLiteStatus init_status = InitAudioRecording();
     if (init_status != kTfLiteOk) {
       return init_status;
     }
