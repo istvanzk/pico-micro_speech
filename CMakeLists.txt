@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(person_detection C CXX ASM)
+project(micro_speech C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -35,9 +35,10 @@ target_link_libraries(
   hardware_pwm
 )
 
+# enable usb output, disable uart output
 pico_enable_stdio_usb(command_responder_test 1)
 pico_enable_stdio_uart(command_responder_test 0)
-
+# create map/bin/hex/uf2 file in addition to ELF
 pico_add_extra_outputs(command_responder_test)
 
 
@@ -85,9 +86,10 @@ target_link_libraries(
   pico-tflmicro_test
 )
 
+# enable usb output, disable uart output
 pico_enable_stdio_usb(micro_speech_test 1)
 pico_enable_stdio_uart(micro_speech_test 0)
-
+# create map/bin/hex/uf2 file in addition to ELF
 pico_add_extra_outputs(micro_speech_test)
 
 
@@ -139,9 +141,10 @@ target_link_libraries(
   # For PDM microphone add: hardware_pio
 )
 
+# enable usb output, disable uart output
 pico_enable_stdio_usb(micro_speech 1)
 pico_enable_stdio_uart(micro_speech 0)
-
+# create map/bin/hex/uf2 file in addition to ELF
 pico_add_extra_outputs(micro_speech)
 
 add_subdirectory("pico-microphone")
