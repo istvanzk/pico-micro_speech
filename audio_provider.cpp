@@ -32,7 +32,7 @@ extern "C" {
 
 #define ADC_PIN 26
 #define CAPTURE_CHANNEL 0
-#define ADC_BIAS ((int16_t)((1.25 * 4095) / 3.3))
+#define ADC_BIAS ((int16_t)((1.65 * 4095) / 3.3))
 #define ADC_BUFFER_SIZE 256
 
 namespace {
@@ -52,7 +52,7 @@ const struct analog_microphone_config config = {
     .gpio = ADC_PIN + CAPTURE_CHANNEL,
 
     // bias voltage of microphone in volts
-    .bias_voltage = 1.25,
+    .bias_voltage = 1.65,
 
     // sample rate in Hz
     .sample_rate = 16000,
