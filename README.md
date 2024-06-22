@@ -5,7 +5,7 @@
 ![Py](https://img.shields.io/badge/Python-3.9+-green)
 [![TensorFlow 2.15](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?logo=tensorflow)](https://github.com/tensorflow/tensorflow/releases/tag/v2.15.0)
 ![Ver](https://img.shields.io/badge/Version-0.11-lightgrey)
-![HWD](https://img.shields.io/badge/HWD_tests-Ongoing-lightgreen)
+![HWD](https://img.shields.io/badge/HWD_test-OK-green)
 
 This repo implements the *micro_speech* example for deployment on Raspberry Pico RP2040 compatible micrcontroller boards. The code is meant to be installed and compiled as part of the [pico-tflmicro](https://github.com/raspberrypi/pico-tflmicro/) version of the [TensorFlow Lite Micro library](https://www.tensorflow.org/lite/microcontrollers) for the Raspberry Pi Pico microcontroller.
 
@@ -86,7 +86,7 @@ For an RP2040 based microcontroller, the ADC resolution is 12-bits, sampling fre
  * voltage_value  =3.3 * (digital_value/(2^resolution))
  * The AUD output DC offset is at one-half the power supply voltage i.e. about 1.65V
 
-
+Code has been tested on SparkFun MicroMode RP20240 board.
 
 ## TODOs
 
